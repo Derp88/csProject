@@ -1,0 +1,4 @@
+Player is at bottom center of the game
+Can move left and right
+Player can shoot at incoming bullets/enemies
+Timer
