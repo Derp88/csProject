@@ -8,6 +8,7 @@ import turtle as trtl
 v_gameOver = False
 v_bulletNum = -1
 v_positionCheckerCount = 0
+v_gameStarted = False
 
 #List
 activeBulletList = []
@@ -15,8 +16,8 @@ activeBulletList = []
 #Game (WN) screen setup
 wn = trtl.Screen()
 wn.bgcolor("Black")
-#background = "iceMap.gif"
-#wn.bgpic(background)
+background = "start.gif"
+wn.bgpic(background)
 wn.tracer(0)
 
 #Player Turtle
@@ -26,8 +27,13 @@ player.penup()
 player.goto(0,-300)
 player.setheading(90)
 player.shapesize(5)
+player.hideturtle()
 
 #Functions
+def initGame():
+    player.showturtle()
+    wn.bgpic("black.gif")
+
 def mouseAim(X,Y):
     player.setheading(player.towards(X,Y))
 
@@ -81,15 +87,22 @@ def moveBullet():
             activeBulletList.remove(activeBullet)
             v_bulletNum = v_bulletNum - 1
 
+def startGame():
+    global v_gameStarted
+    if v_gameStarted == False:
+        v_gameStarted = True
+        initGame()
+
 def mainPerodic():
     moveBullet()
 
-generateBullet(0,0,270)
+
 
 #Inputs
 wn.onscreenclick(mouseAim)
 wn.onkeypress(playerLeft, "a")
 wn.onkeypress(playerRight, "d")
+wn.onkeypress(startGame, "p")
 wn.listen()
 
 #Game Loop
