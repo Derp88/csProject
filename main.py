@@ -12,6 +12,8 @@ v_gameStarted = False
 
 #List
 activeBulletList = []
+spawnTimerList = [500]
+
 
 #Game (WN) screen setup
 wn = trtl.Screen()
@@ -36,6 +38,7 @@ def initGame():
 
 def mouseAim(X,Y):
     player.setheading(player.towards(X,Y))
+    generateBullet(player.xcor(), player.ycor(), player.heading())
 
 def playerLeft():
     if player.xcor() > -280:
@@ -47,6 +50,7 @@ def playerRight():
 
 def generateBullet(X,Y, HEADING):
     global v_bulletNum
+    
 
     #Makes bullet
     v_bulletNum = v_bulletNum + 1
@@ -79,13 +83,23 @@ def moveBullet():
             BulletY = activeBullet.ycor()
             BulletHeading = activeBullet.heading()
         
-        activeBullet.sety(activeBullet.ycor()-.1)
+        activeBullet.forward(.2)
 
         #This removes the bullet when it goes out of bounds
         if activeBullet.xcor() > 300 or activeBullet.xcor() < -300 or activeBullet.ycor() > 300 or activeBullet.ycor() < -300:
             activeBullet.hideturtle()
             activeBulletList.remove(activeBullet)
             v_bulletNum = v_bulletNum - 1
+
+def spawnBullet():
+    for counter in spawnTimerList:
+        spawnTimerList[0] = spawnTimerList[0] + 1
+        if spawnTimerList[0] > 1000:
+            print("bullet gen")
+            generateBullet(0,300, 270)
+            spawnTimerList[0] = 0
+        
+        
 
 def startGame():
     global v_gameStarted
@@ -94,7 +108,10 @@ def startGame():
         initGame()
 
 def mainPerodic():
-    moveBullet()
+    global v_gameStarted
+    if v_gameStarted == True:
+        moveBullet()
+        spawnBullet()
 
 
 
