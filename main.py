@@ -3,6 +3,7 @@
 #Uses Python Turtle Library
 
 import turtle as trtl 
+import random
 
 #Variables
 v_gameOver = False
@@ -12,7 +13,7 @@ v_gameStarted = False
 
 #List
 activeBulletList = []
-spawnTimerList = [500]
+spawnTimerList = [500,200,700,900,0]
 
 
 #Game (WN) screen setup
@@ -92,12 +93,22 @@ def moveBullet():
             v_bulletNum = v_bulletNum - 1
 
 def spawnBullet():
-    for counter in spawnTimerList:
-        spawnTimerList[0] = spawnTimerList[0] + 1
-        if spawnTimerList[0] > 1000:
-            print("bullet gen")
-            generateBullet(0,300, 270)
-            spawnTimerList[0] = 0
+    spawnTimerList[0] = spawnTimerList[0] + 1
+    spawnTimerList[1] = spawnTimerList[1] + 1
+    spawnTimerList[2] = spawnTimerList[2] + 1
+    randomReset0 = random.randint(500,300000)
+    randomReset1 = random.randint(500,300000)
+    randomReset2 = random.randint(500,300000)
+    if spawnTimerList[0] > randomReset0:  
+        generateBullet(0,300, 270)
+        spawnTimerList[0] = 0
+    if spawnTimerList[1] > randomReset1:
+        generateBullet(150,300, 270)
+        spawnTimerList[1] = 0
+    if spawnTimerList[2] > randomReset2:
+        generateBullet(-150,300, 270)
+        spawnTimerList[2] = 0
+        
         
         
 
