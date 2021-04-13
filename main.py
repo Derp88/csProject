@@ -10,6 +10,10 @@ v_gameOver = False
 v_bulletNum = -1
 v_positionCheckerCount = 0
 v_gameStarted = False
+v_bulletX = 0
+v_bulletY = 0
+v_bulletHeading = 0
+v_dodged = 0
 
 #List
 activeBulletList = []
@@ -51,7 +55,6 @@ def playerRight():
 
 def generateBullet(X,Y, HEADING):
     global v_bulletNum
-    
 
     #Makes bullet
     v_bulletNum = v_bulletNum + 1
@@ -60,7 +63,6 @@ def generateBullet(X,Y, HEADING):
     bullet.color("White")
     activeBulletList.append(bullet)
     
-
     #Sets bullet
     activeBulletList[v_bulletNum].setx(X)
     activeBulletList[v_bulletNum].sety(Y)
@@ -70,27 +72,30 @@ def generateBullet(X,Y, HEADING):
 def moveBullet():
     wn.update()
     global v_bulletNum
-    global BulletX
-    global BulletY
-    global BulletHeading
+    global v_bulletX
+    global v_bulletY
+    global v_bulletHeading
     global v_positionCheckerCount
-    
+    global v_dodged
 
     for activeBullet in activeBulletList:
         v_positionCheckerCount = v_positionCheckerCount + 1
         #Reports bullet current position to collision checker
         if v_positionCheckerCount % 100 == 0:
-            BulletX = activeBullet.xcor()
-            BulletY = activeBullet.ycor()
-            BulletHeading = activeBullet.heading()
+            v_bulletX = activeBullet.xcor()
+            v_bulletY = activeBullet.ycor()
+            v_bulletHeading = activeBullet.heading()
         
         activeBullet.forward(.2)
 
         #This removes the bullet when it goes out of bounds
-        if activeBullet.xcor() > 300 or activeBullet.xcor() < -300 or activeBullet.ycor() > 300 or activeBullet.ycor() < -300:
+        if activeBullet.xcor() > 300 or activeBullet.xcor() < -300 or activeBullet.ycor() > 300 or activeBullet.ycor() < -350:
             activeBullet.hideturtle()
             activeBulletList.remove(activeBullet)
             v_bulletNum = v_bulletNum - 1
+            v_dodged = v_dodged + 1
+            print(v_dodged)
+            
 
 def spawnBullet():
     spawnTimerList[0] = spawnTimerList[0] + 1
@@ -109,6 +114,11 @@ def spawnBullet():
         generateBullet(-150,300, 270)
         spawnTimerList[2] = 0
         
+def collisionCheck():
+    global v_gameOver
+    if player.distance(v_bulletX, v_bulletY) < 10 and v_bulletHeading == 270: 
+        v_gameOver = True
+    
         
         
 
@@ -123,6 +133,7 @@ def mainPerodic():
     if v_gameStarted == True:
         moveBullet()
         spawnBullet()
+        collisionCheck()
 
 
 
