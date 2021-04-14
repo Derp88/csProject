@@ -8,11 +8,7 @@ import random
 #Variables
 v_gameOver = False
 v_bulletNum = -1
-v_positionCheckerCount = 0
 v_gameStarted = False
-v_bulletX = 0
-v_bulletY = 0
-v_bulletHeading = 0
 v_dodged = 0
 
 #List
@@ -36,22 +32,25 @@ player.setheading(90)
 player.shapesize(5)
 player.hideturtle()
 
+#Score Turtle
+scoreTurtle = trtl.Turtle()
+scoreTurtle.hideturtle()
+scoreTurtle.color("White")
+
 #Functions
 def initGame():
     player.showturtle()
     wn.bgpic("black.gif")
 
-def mouseAim(X,Y):
-    player.setheading(player.towards(X,Y))
-    generateBullet(player.xcor(), player.ycor(), player.heading())
-
 def playerLeft():
-    if player.xcor() > -280:
-        player.setposition(player.xcor()-5, player.ycor())
+    if player.xcor() > -180:
+        player.setposition(player.xcor()-15, player.ycor())
+
 
 def playerRight():
-    if player.xcor() < 280:
-        player.setposition(player.xcor()+5, player.ycor())
+    if player.xcor() < 180:
+        player.setposition(player.xcor()+15, player.ycor())
+
 
 def generateBullet(X,Y, HEADING):
     global v_bulletNum
@@ -61,8 +60,11 @@ def generateBullet(X,Y, HEADING):
     bullet = trtl.Turtle()
     bullet.penup()
     bullet.color("White")
+    wn.addshape("badboy1.gif")
+    bullet.shape("badboy1.gif")
+    bullet.shapesize(12)
     activeBulletList.append(bullet)
-    
+
     #Sets bullet
     activeBulletList[v_bulletNum].setx(X)
     activeBulletList[v_bulletNum].sety(Y)
@@ -72,29 +74,25 @@ def generateBullet(X,Y, HEADING):
 def moveBullet():
     wn.update()
     global v_bulletNum
-    global v_bulletX
-    global v_bulletY
-    global v_bulletHeading
-    global v_positionCheckerCount
     global v_dodged
-
+    global v_gameOver
+    
     for activeBullet in activeBulletList:
-        v_positionCheckerCount = v_positionCheckerCount + 1
-        #Reports bullet current position to collision checker
-        if v_positionCheckerCount % 100 == 0:
-            v_bulletX = activeBullet.xcor()
-            v_bulletY = activeBullet.ycor()
-            v_bulletHeading = activeBullet.heading()
-        
-        activeBullet.forward(.2)
+        #activeBullet.forward(.4)
+        activeBullet.sety(activeBullet.ycor() - .4)
 
-        #This removes the bullet when it goes out of bounds
+        #This removes the bullet when it goes out of bounds and adds it to the score counter
         if activeBullet.xcor() > 300 or activeBullet.xcor() < -300 or activeBullet.ycor() > 300 or activeBullet.ycor() < -350:
             activeBullet.hideturtle()
             activeBulletList.remove(activeBullet)
             v_bulletNum = v_bulletNum - 1
             v_dodged = v_dodged + 1
-            print(v_dodged)
+            scoreTurtle.clear()
+            scoreTurtle.write(v_dodged,align="center", font=("Arial", 20, "normal"))
+
+        #Checks for collison
+        if player.distance(activeBullet.xcor(), activeBullet.ycor()) < 25:
+            v_gameOver = True
             
 
 def spawnBullet():
@@ -105,23 +103,15 @@ def spawnBullet():
     randomReset1 = random.randint(500,300000)
     randomReset2 = random.randint(500,300000)
     if spawnTimerList[0] > randomReset0:  
-        generateBullet(0,300, 270)
+        generateBullet(-40+random.randint(0,80),300, 270)
         spawnTimerList[0] = 0
     if spawnTimerList[1] > randomReset1:
-        generateBullet(150,300, 270)
+        generateBullet(110+random.randint(0,80),300, 270)
         spawnTimerList[1] = 0
     if spawnTimerList[2] > randomReset2:
-        generateBullet(-150,300, 270)
+        generateBullet(-190+random.randint(0,80),300, 270)
         spawnTimerList[2] = 0
         
-def collisionCheck():
-    global v_gameOver
-    if player.distance(v_bulletX, v_bulletY) < 10 and v_bulletHeading == 270: 
-        v_gameOver = True
-    
-        
-        
-
 def startGame():
     global v_gameStarted
     if v_gameStarted == False:
@@ -133,15 +123,13 @@ def mainPerodic():
     if v_gameStarted == True:
         moveBullet()
         spawnBullet()
-        collisionCheck()
-
 
 
 #Inputs
-wn.onscreenclick(mouseAim)
 wn.onkeypress(playerLeft, "a")
 wn.onkeypress(playerRight, "d")
 wn.onkeypress(startGame, "p")
+
 wn.listen()
 
 #Game Loop
