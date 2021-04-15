@@ -22,6 +22,9 @@ wn.bgcolor("Black")
 background = "start.gif"
 wn.bgpic(background)
 wn.tracer(0)
+wn.addshape("badboy1.gif")
+wn.addshape("badboy2.gif")
+wn.addshape("badboy3.gif")
 
 #Player Turtle
 player = trtl.Turtle()
@@ -36,11 +39,14 @@ player.hideturtle()
 scoreTurtle = trtl.Turtle()
 scoreTurtle.hideturtle()
 scoreTurtle.color("White")
+scoreTurtle.penup()
+scoreTurtle.goto(0,334)
 
 #Functions
 def initGame():
     player.showturtle()
-    wn.bgpic("black.gif")
+    wn.bgpic("background.gif")
+    
 
 def playerLeft():
     if player.xcor() > -180:
@@ -59,10 +65,15 @@ def generateBullet(X,Y, HEADING):
     v_bulletNum = v_bulletNum + 1
     bullet = trtl.Turtle()
     bullet.penup()
-    bullet.color("White")
-    wn.addshape("badboy1.gif")
-    bullet.shape("badboy1.gif")
-    bullet.shapesize(12)
+    v_imageRandomizer = random.randint(0,2)
+    if v_imageRandomizer == 0:
+        bullet.shape("badboy1.gif")
+    elif v_imageRandomizer == 1:
+        bullet.shape("badboy2.gif")
+    else:
+        bullet.shape("badboy3.gif")
+
+    #Adds bullet to list
     activeBulletList.append(bullet)
 
     #Sets bullet
@@ -88,12 +99,12 @@ def moveBullet():
             v_bulletNum = v_bulletNum - 1
             v_dodged = v_dodged + 1
             scoreTurtle.clear()
-            scoreTurtle.write(v_dodged,align="center", font=("Arial", 20, "normal"))
+            scoreTurtle.write("Score: " + str(v_dodged),align="center", font=("Arial", 20, "normal"))
 
         #Checks for collison
         if player.distance(activeBullet.xcor(), activeBullet.ycor()) < 25:
             v_gameOver = True
-            
+        
 
 def spawnBullet():
     spawnTimerList[0] = spawnTimerList[0] + 1
@@ -124,21 +135,13 @@ def mainPerodic():
         moveBullet()
         spawnBullet()
 
-
 #Inputs
 wn.onkeypress(playerLeft, "a")
 wn.onkeypress(playerRight, "d")
 wn.onkeypress(startGame, "p")
-
 wn.listen()
 
 #Game Loop
 while v_gameOver == False:
     wn.update()
     mainPerodic()
-
-    
-
-
-
-
