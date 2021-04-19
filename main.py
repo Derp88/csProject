@@ -1,6 +1,6 @@
 #AP CS Project
 #Created by Dylan Barkley and Caleb Obenchain
-#Uses Python Turtle Library
+#Uses Python Turtle Library and random
 
 import turtle as trtl 
 import random
@@ -11,10 +11,9 @@ v_bulletNum = -1
 v_gameStarted = False
 v_dodged = 0
 
-#List
+#Lists
 activeBulletList = []
-spawnTimerList = [500,200,700,900,0]
-
+spawnTimerList = [500,200,700]
 
 #Game (WN) screen setup
 wn = trtl.Screen()
@@ -47,25 +46,23 @@ def initGame():
     player.showturtle()
     wn.bgpic("background.gif")
     
-
 def playerLeft():
     if player.xcor() > -180:
         player.setposition(player.xcor()-15, player.ycor())
-
 
 def playerRight():
     if player.xcor() < 180:
         player.setposition(player.xcor()+15, player.ycor())
 
-
+#Makes bullet
 def generateBullet(X,Y, HEADING):
     global v_bulletNum
 
-    #Makes bullet
     v_bulletNum = v_bulletNum + 1
     bullet = trtl.Turtle()
     bullet.penup()
     v_imageRandomizer = random.randint(0,2)
+    #Sets bullet image
     if v_imageRandomizer == 0:
         bullet.shape("badboy1.gif")
     elif v_imageRandomizer == 1:
@@ -82,14 +79,15 @@ def generateBullet(X,Y, HEADING):
     activeBulletList[v_bulletNum].setheading(HEADING)
     wn.update()
 
+#Moves bullet down the screen
 def moveBullet():
     wn.update()
     global v_bulletNum
     global v_dodged
     global v_gameOver
     
+    #Goes through list of all active bullets and moves them
     for activeBullet in activeBulletList:
-        #activeBullet.forward(.4)
         activeBullet.sety(activeBullet.ycor() - .4)
 
         #This removes the bullet when it goes out of bounds and adds it to the score counter
@@ -101,11 +99,11 @@ def moveBullet():
             scoreTurtle.clear()
             scoreTurtle.write("Score: " + str(v_dodged),align="center", font=("Arial", 20, "normal"))
 
-        #Checks for collison
+        #Checks for collison with player
         if player.distance(activeBullet.xcor(), activeBullet.ycor()) < 25:
             v_gameOver = True
         
-
+#Chooses where on the screen the bullet will spawn
 def spawnBullet():
     spawnTimerList[0] = spawnTimerList[0] + 1
     spawnTimerList[1] = spawnTimerList[1] + 1
@@ -122,13 +120,15 @@ def spawnBullet():
     if spawnTimerList[2] > randomReset2:
         generateBullet(-190+random.randint(0,80),300, 270)
         spawnTimerList[2] = 0
-        
+
+#Starts the game once "P" has been pressed 
 def startGame():
     global v_gameStarted
     if v_gameStarted == False:
         v_gameStarted = True
         initGame()
 
+#Calls functions that neeed to be constantly called, moveBullet and spawnBullet
 def mainPerodic():
     global v_gameStarted
     if v_gameStarted == True:
