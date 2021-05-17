@@ -1,5 +1,4 @@
 #AP CS Project
-#Created by Dylan Barkley and Caleb Obenchain
 #Uses Python Turtle Library and random
 
 import turtle as trtl 
@@ -63,9 +62,9 @@ def generateBullet(X,Y, HEADING):
     bullet.penup()
     v_imageRandomizer = random.randint(0,2)
     #Sets bullet image
-    if v_imageRandomizer == 0:
+    if X < -110:
         bullet.shape("badboy1.gif")
-    elif v_imageRandomizer == 1:
+    elif X < 110:
         bullet.shape("badboy2.gif")
     else:
         bullet.shape("badboy3.gif")
