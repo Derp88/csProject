@@ -1,5 +1,5 @@
 #AP CS Project
-#Uses Python Turtle Library and random
+#Uses Python Turtle Library and random module
 
 import turtle as trtl 
 import random
@@ -60,7 +60,6 @@ def generateBullet(X,Y, HEADING):
     v_bulletNum = v_bulletNum + 1
     bullet = trtl.Turtle()
     bullet.penup()
-    v_imageRandomizer = random.randint(0,2)
     #Sets bullet image
     if X < -110:
         bullet.shape("badboy1.gif")
